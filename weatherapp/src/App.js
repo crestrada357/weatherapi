@@ -8,17 +8,33 @@ function App() {
   const [weatherData, setWeatherData] = useState({city:'', temp:''});
   const getWeather= async(e)=>{
     e.preventDefault();
-    const {city,country}=e.target.elements;
-    const cityValue = city.value;
-    const countryValue = country.value;
-    const API_URL = `http://api.openweathermap.org/data/2.5/weather?q=${cityValue},${countryValue}&APPID=${WEATHER_KEY}&units=metric`;
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    setWeatherData({
-      temp:data.main.temp,
-      city:data.name,
-      error:null
-    })
+      const {city,country}=e.target.elements;
+      const cityValue = city.value;
+      const countryValue = country.value;
+    if(cityValue!==''){
+      const API_URL = `http://api.openweathermap.org/data/2.5/weather?q=${cityValue},${countryValue}&APPID=${WEATHER_KEY}&units=metric`;
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      if(data.cod===200){
+        setWeatherData({
+          temp:data.main.temp,
+          city:data.name,
+          error:null
+        })
+      }else{
+        setWeatherData({
+          temp:'',
+          city:'',
+          error:data.message
+        })
+      }
+    }else{
+      setWeatherData({
+        temp:'',
+        city:'',
+        error:'A city name must be provided'
+      })
+    }
   }
   
   return (
